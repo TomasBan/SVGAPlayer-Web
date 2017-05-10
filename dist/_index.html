@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-cmn-Hans">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
@@ -11,15 +12,62 @@
     <title> index </title>
     <link rel="stylesheet" href="./css/index.css" charset="utf-8">
 </head>
+
 <body>
 
     <div id="test">
-        <canvas id="canvas" src="assets/PinJump.svga" loops="0" clearsAfterStop="false" width="500" height="500" style="background-color: #000000;"></canvas>
+        <canvas id="canvas" loops="0" clearsAfterStop="false" width="500" height="500" style="background-color: #000000;"></canvas>
     </div>
 
-    <!--[if !IE]><!--><script src="http://assets.dwstatic.com/common/lib/yyzip/0.0.1/yyzip.min.js" charset="utf-8"></script><!--<![endif]-->
-    <!--[if IE]><script src="http://assets.dwstatic.com/common/lib/??jszip/3.1.3/jszip.min.js,jszip/3.1.3/jszip-utils.min.js,jszip/3.1.3/jszip-utils-ie.min.js" charset="utf-8"></script><![endif]-->
+    <script>
+        const base64ArrayBuffer = (arrayBuffer) => {
+            let base64 = '';
+            let encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+            let bytes = new Uint8Array(arrayBuffer);
+            let byteLength = bytes.byteLength;
+            let byteRemainder = byteLength % 3;
+            let mainLength = byteLength - byteRemainder;
+
+            let a, b, c, d;
+            let chunk;
+
+            for (let i = 0; i < mainLength; i = i + 3) {
+                chunk = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2];
+                a = (chunk & 16515072) >> 18;
+                b = (chunk & 258048) >> 12;
+                c = (chunk & 4032) >> 6;
+                d = chunk & 63;
+                base64 += encodings[a] + encodings[b] + encodings[c] + encodings[d];
+            }
+
+            if (byteRemainder == 1) {
+                chunk = bytes[mainLength];
+                a = (chunk & 252) >> 2;
+                b = (chunk & 3) << 4;
+                base64 += encodings[a] + encodings[b] + '==';
+            } else if (byteRemainder == 2) {
+                chunk = (bytes[mainLength] << 8) | bytes[mainLength + 1];
+                a = (chunk & 64512) >> 10;
+                b = (chunk & 1008) >> 4;
+                c = (chunk & 15) << 2;
+                base64 += encodings[a] + encodings[b] + encodings[c] + '=';
+            }
+            return base64;
+        }
+        var base64Test;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', "assets/PinJump.svga", true);
+        xhr.onreadystatechange = function () {
+            base64Test = base64ArrayBuffer(this.response);
+        };
+        xhr.responseType = 'arraybuffer';
+        xhr.send();
+    </script>
+
+    <script src="http://assets.dwstatic.com/common/lib/??jszip/3.1.3/jszip.min.js,jszip/3.1.3/jszip-utils.min.js" charset="utf-8"></script>
     <script src="./js/index.js" charset="utf-8"></script> 
 
 </body>
+
 </html>
