@@ -31,7 +31,6 @@ module.exports = class SVGAParser {
      * callback(SVGAVideoEntity videoItem)
      */
     load(url, callback) {
-        alert("TTTTTT");
         if (SVGAParser.database) {
             SVGAParser.database.find(url, ( images, movie, err ) => {
                 if (!err) {
